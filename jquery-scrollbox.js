@@ -53,6 +53,7 @@
 
             // event handlers for mousewheel (via juery plugin) and touch events
             $box.on('mousewheel touchmove touchend', function (event) {
+                console.log(event);
                 // mousewheel event data
                 let deltaY = event.deltaY;
                 let deltaFactor = event.deltaFactor;
@@ -69,8 +70,6 @@
                 // reset the touch parameters after the touch event ends
                 if (event.type === 'touchend') {
                     _lastTouchOffset = null;
-
-                    return false;
                 }
 
                 // current vertical position of the scrollbox
@@ -98,7 +97,7 @@
 
                 $knob.css('top', knob_top);
 
-                return false;
+                return event.type !== 'touchmove';
             });
         });
     };
