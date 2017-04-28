@@ -52,18 +52,25 @@
             });
 
             // event handlers for mousewheel (via juery plugin) and touch events
-            $box.on('mousewheel touchmove', function (event) {
+            $box.on('mousewheel touchmove touchend', function (event) {
                 // mousewheel event data
                 let deltaY = event.deltaY;
                 let deltaFactor = event.deltaFactor;
 
-                // switch delta values in case of touch event
                 if (event.type === 'touchmove') {
-                    let _currentTouchOffset = event.touches[0].screenY;
+                    let _currentTouchOffset = event.originalEvent.touches[0].clientY;
 
                     deltaY = 1;
-                    deltaFactor = _currentTouchOffset - _lastTouchOffset;
+                    // if this is the beginning of a touch move, set the intensity to 0
+                    deltaFactor = _lastTouchOffset === null ? 0 : _currentTouchOffset - _lastTouchOffset;
                     _lastTouchOffset = _currentTouchOffset;
+                }
+
+                // reset the touch parameters after the touch event ends
+                if (event.type === 'touchend') {
+                    _lastTouchOffset = null;
+
+                    return false;
                 }
 
                 // current vertical position of the scrollbox
